@@ -8,7 +8,7 @@ import json
 # Önceden eğitilmiş modeli yükle
 model = tf.keras.models.load_model("chatbot_model.h5")
 
-# İntentleri yükle
+# Intentleri yükle
 with open('intents.json') as file:
     intents = json.load(file)
 
@@ -23,12 +23,12 @@ words = intents['words']
 def chatbot_response(msg):
     # Girdiyi ön işleyelim
     msg = msg.lower()
-    words = nltk.word_tokenize(msg)
-    words = [lemmatizer.lemmatize(word) for word in words]
+    sentence_words = nltk.word_tokenize(msg)
+    sentence_words = [lemmatizer.lemmatize(word) for word in sentence_words]
 
     # Girdiye karşılık gelen bag of words dizisini oluşturalım
     bag_of_words = [0] * len(words)
-    for w in words:
+    for w in sentence_words:
         for i, word in enumerate(words):
             if word == w:
                 bag_of_words[i] = 1
@@ -53,11 +53,12 @@ def chatbot_response(msg):
 
     return response
 
-# Kullanıcıyla sohbet etmek için bir döngü başlatalım
-while True:
-    msg = input("Siz: ")
-    if msg.lower() == "quit":
-        break
+if __name__ == "__main__":
+    # Kullanıcıyla sohbet etmek için bir döngü başlatalım
+    while True:
+        msg = input("Siz: ")
+        if msg.lower() == "quit":
+            break
 
-    response = chatbot_response(msg)
-    print("Chat Bot: ", response)
+        response = chatbot_response(msg)
+        print("Chat Bot: ", response)
