@@ -129,3 +129,27 @@ def test_brain_n8n_style_workflow_condition_branching():
         result = brain.run_workflow(workflow, "Hello n8n")
 
     assert result["response"] == "chat:hello n8n"
+
+
+def test_ui_demo_workflow_has_expected_shape():
+    ui = importlib.import_module("ui")
+    workflow = ui.build_demo_workflow()
+    assert workflow["start"] == "normalize"
+    assert "respond" in workflow["nodes"]
+
+
+def test_ui_demo_workflow_executes_with_brain():
+    fake_chat = types.ModuleType("chat")
+    fake_chat.chatbot_response = lambda message: f"ui:{message}"
+
+    fake_speak = types.ModuleType("speak")
+    fake_speak.say = lambda message: message
+
+    with mock.patch.dict(sys.modules, {"chat": fake_chat, "speak": fake_speak}):
+        brains = importlib.reload(importlib.import_module("brains"))
+        ui = importlib.reload(importlib.import_module("ui"))
+        brain = brains.Brain()
+        result = ui.run_workflow_demo(brain, "HELLO UI")
+
+    assert result["normalized"] == "hello ui"
+    assert result["response"] == "ui:hello ui"

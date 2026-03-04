@@ -63,3 +63,15 @@ print(result["response"])
 
 Condition nodes are also supported with `type="condition"` and branching via
 `true_next` / `false_next`.
+
+
+## Web UI
+
+You can open a simple browser UI to see chat, autonomous cycles, workflow runs,
+and recent brain memory in one page:
+
+```bash
+python ui.py
+```
+
+Then open `http://127.0.0.1:8000`.
